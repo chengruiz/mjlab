@@ -7,6 +7,7 @@ gym.register(
   kwargs={
     "env_cfg_entry_point": f"{__name__}.flat_env_cfg:G1FlatEnvCfg",
     "rl_cfg_entry_point": f"{__name__}.rl_cfg:G1FlatPPORunnerCfg",
+    "cusrl_cfg_entry_point": f"{__name__}.cusrl_cfg:G1FlatPPOTrainerCfg",
   },
 )
 

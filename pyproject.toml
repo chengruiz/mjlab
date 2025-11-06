@@ -60,6 +60,8 @@ demo = "mjlab.scripts.demo:main"
 list_envs = "mjlab.scripts.list_envs:main"
 viz-nan = "mjlab.scripts.nan_viz:main"
 
+cusrl_train = "mjlab.scripts.cusrl_train:main"
+
 [dependency-groups]
 dev = [
   "ipdb>=0.13.13",
