@@ -2,10 +2,10 @@
 
 import os
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import gymnasium as gym
 import tyro
@@ -79,8 +79,8 @@ def run_train(task: str, cfg: TrainConfig) -> None:
     print("[INFO] Recording videos during training.")
 
 
-  agent_cfg = asdict(cfg.agent)
-  env_cfg = asdict(cfg.env)
+  agent_cfg = cusrl.utils.to_dict(cfg.agent)
+  env_cfg = cusrl.utils.to_dict(cfg.env)
 
   dump_yaml(log_dir / "params" / "env.yaml", env_cfg)
   dump_yaml(log_dir / "params" / "agent.yaml", agent_cfg)
@@ -112,22 +112,25 @@ def main():
   # Parse the rest of the arguments + allow overriding env_cfg and agent_cfg.
   env_cfg = load_cfg_from_registry(chosen_task, "env_cfg_entry_point")
   agent_cfg = load_cfg_from_registry(chosen_task, "cusrl_cfg_entry_point")
+  assert isinstance(agent_cfg, cusrl.Trainer.Factory)
 
-  config = TrainConfig(env=env_cfg, agent=agent_cfg)
+  config = TrainConfig(env=env_cfg, agent=cusrl.utils.to_dataclass(agent_cfg))
+  config.__dataclass_fields__["agent"].type = type(config.agent)
+  config.__annotations__["agent"] = type(config.agent)
   args = tyro.cli(
-    dict,
+    TrainConfig,
     args=remaining_args,
-    default=cusrl.utils.to_dict(config),
+    default=config,
     prog=sys.argv[0] + f" {chosen_task}",
     config=(
       tyro.conf.AvoidSubcommands,
       tyro.conf.FlagConversionOff,
     ),
   )
-  config = cusrl.utils.from_dict(config, args)
+  args.agent = cusrl.utils.from_dict(agent_cfg, cusrl.utils.to_dict(args.agent))
   del env_cfg, agent_cfg, remaining_args
 
-  run_train(chosen_task, config)
+  run_train(chosen_task, args)
 
 
 if __name__ == "__main__":
