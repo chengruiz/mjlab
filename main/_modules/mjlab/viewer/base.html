@@ -809,6 +809,7 @@ document.write(`
     <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_stats_last_time</span> <span class="o">=</span> <span class="n">now</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_last_tick_time</span> <span class="o">=</span> <span class="n">now</span>
     <span class="k">if</span> <span class="n">catch_sigint</span><span class="p">:</span>
       <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigint_handler</span><span class="p">)</span>
 
